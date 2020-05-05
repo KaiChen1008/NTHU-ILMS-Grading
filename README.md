@@ -1,7 +1,5 @@
 # NTHU-ILMS-Grading
 
-[TOC]
-
 ## TO-DO List
 
 - [ ] 如果兩個人的名字一樣了話，會導致其中一個人的成績是錯誤的
