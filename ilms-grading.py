@@ -3,28 +3,41 @@ from selenium.webdriver.common.keys import Keys
 from time import sleep
 import csv
 import random
+from hw_id_parser import hw_id_parser
 from customize import HW_WEBSITE, CSV_FILENAME
 from customize import ACCOUNT, PASSWORD
 from customize import customize_comment
+from customize import CLEAR_PREVIOUS
+
 ILMS_WEBSITE = 'http://lms.nthu.edu.tw'
 
 class bot():
     def __init__(self):
         self.driver = webdriver.Chrome()
         self.grades = {}
+        print('start reading %s.......'%(CSV_FILENAME))
         self.read_csv(CSV_FILENAME)
+        print('find %d scores in %s\n'%(len(self.grades), CSV_FILENAME))
+        
+        print('start parsing index.html.......')
+        parser = hw_id_parser()
+        parser.start()
+        self.hw_id_table = parser.get_table()
+        print('parse ending')
+        print('find %d students in index.html.\n'%(len(self.hw_id_table)))
+   
 
     def start(self):
         self.driver.get(ILMS_WEBSITE)
         
         sleep(1)
 
-        print('login....')
+        print('login....\n')
         self.login()
         
-        sleep(3)
+        sleep(2)
 
-        print('direct to homework website...')
+        print('re-direct to homework website...')
         self.driver.get(HW_WEBSITE)
 
         sleep(1)
@@ -35,10 +48,10 @@ class bot():
         sleep(1)
         last_one = False
         while not last_one:
-            sleep(1)
             last_one = self.grading()
         
         print('done.:))')
+    
 
     def check_is_finish(self):
         is_last_one = self.driver.find_element_by_xpath('//*[@id="fmNext"]').get_attribute("value") # //*[@id="fmNext"]
@@ -46,38 +59,55 @@ class bot():
         if is_last_one == 1:
             return False
         return True
+    
+    def find_student_name(self):
+        # by 黃oo, 2020-04-15 22:55, 人氣(33)
+        doc_txt = self.driver.find_element_by_xpath('//*[@id="doc"]/div[2]/div[1]').text
 
+        NAME = doc_txt[doc_txt.find(' ')+1: doc_txt.find(',')]
+        return NAME
+    
+    def get_student_id(self):
+        # http://lms.nthu.edu.tw/course.php?courseID=40770&f=doc&cid=2066894
+        url = self.driver.current_url
+        cid_index = url.rfind('=') + 1
+        cid = url[cid_index:]
+        student_id = self.hw_id_table[cid]
+        return student_id
 
     def grading(self):
         # find the name
-        doc_txt = self.driver.find_element_by_xpath('//*[@id="doc"]/div[2]/div[1]').text
-        doc_txt = doc_txt.replace(',', '').split(' ')
-        NAME = doc_txt[1]
-        grade = self.grades[NAME]
-        print('start grading ', NAME)
+        NAME = self.find_student_name()
+        ID   = self.get_student_id()
+        print('start grading ', ID,NAME)
+        
+        grade = self.grades[ID]
 
         # grading
         grade_btn = self.driver.find_element_by_xpath('//*[@id="tScore"]/a')
         grade_btn.click()
 
-        sleep(1)
+        sleep(0.4)
 
         self.driver.switch_to.frame('if1')
         grade_input = self.driver.find_element_by_xpath('//*[@id="fmScore"]')
+        if CLEAR_PREVIOUS: grade_input.clear()
         grade_input.send_keys(grade['score'])
         
+        
 
-        comment = customize_comment()
+        comment = customize_comment(grade)
 
         comment_input = self.driver.find_element_by_xpath('//*[@id="fmScoreNote"]')
+        if CLEAR_PREVIOUS: comment_input.clear()
         comment_input.send_keys(comment)
-
         last_one = self.check_is_finish()
+
+        sleep(1)
 
         # next one
         comfirm_btn = self.driver.find_element_by_xpath('//*[@id="fm"]/div[2]/input[1]')
         comfirm_btn.click()
-
         sleep(1)
         return last_one
     
@@ -131,13 +161,12 @@ class bot():
 
         for g in G:
             if g[0] == 'ID': continue
-            NAME = g[1]
+            ID = g[0]
             m = {}
             for i in range(len(keys)):
                 m[ keys[i] ] = g[i]
-            self.grades[NAME] = m
+            self.grades[ID] = m
 
-
-my_bot = bot()
-
-my_bot.start()
+if __name__ == "__main__":
+    my_bot = bot()
+    my_bot.start()

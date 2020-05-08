@@ -1,11 +1,5 @@
 # NTHU-ILMS-Grading
 
-## TO-DO List
-
-- [ ] 如果兩個人的名字一樣了話，會導致其中一個人的成績是錯誤的
-- [ ] 如果名字是兩個字的，請將csv 裡的名字改成他的姓氏
-  - Ex. 梁協 -> 梁
-
 ## Installation
 
 1. Find the brower's version.
@@ -31,6 +25,18 @@ pip install selenium
 
 ## Usage
 
+- Download the index.html from ILMS.
+
+<img src="https://i.imgur.com/adBlnzq.jpg" style="zoom:25%;" />
+
+<img src="https://i.imgur.com/TAdXYa3.png" style="zoom:25%;" />
+
+
+
+- Unzip the zip file and find `index.html`. Drag `index.html` to your work directory.
+
+<img src="https://i.imgur.com/jQ9DKbR.png" style="zoom:25%;" />
+
 - Specify `HW_WEBSITE` in `customize.py`.
 
 ```python
@@ -41,7 +47,7 @@ HW_WEBSITE = 'http://lms.nthu.edu.tw/course.php?courseID=???&f=hw_doclist&hw=???
 
 
 
-- Setup your account in `customize.py`
+- Setup your ILMS account in `customize.py`
 
   ```python
   ACCOUNT = ''
@@ -52,7 +58,7 @@ HW_WEBSITE = 'http://lms.nthu.edu.tw/course.php?courseID=???&f=hw_doclist&hw=???
 
 - Summary grades in a csv file.
 
-  - Your csv file should <font color=#bf2222>at minimum</font> contain a "Name" column, a "ID" column" and a "score" column.
+  - Your csv file should <font color=#bf2222>at minimum</font> contain a "ID" column" and a "score" column.
   - In csv file, each row represent a student.
   - p.s. You can generate a csv file simply using Excel or Google Sheet.
 
