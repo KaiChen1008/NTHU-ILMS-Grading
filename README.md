@@ -27,11 +27,7 @@ pip install selenium
 
 - Download the index.html from ILMS.
 
-<img src="https://i.imgur.com/adBlnzq.jpg" style="zoom:25%;" />
-
-<img src="https://i.imgur.com/TAdXYa3.png" style="zoom:25%;" />
-
-
+<img src="https://i.imgur.com/EVtAxw7.gif" style="zoom:25%;" />
 
 - Unzip the zip file and find `index.html`. Drag `index.html` to your work directory.
 
