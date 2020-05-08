@@ -25,7 +25,7 @@ pip install selenium
 
 ## Usage
 
-- Download the index.html from ILMS.
+- Download homeworks from ILMS.
 
 <img src="https://i.imgur.com/EVtAxw7.gif" style="zoom:25%;" />
 
