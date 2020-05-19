@@ -1,5 +1,9 @@
 # NTHU-ILMS-Grading
 
+## Requirements
+
+1. python3
+
 ## Installation
 
 1. Find the brower's version.

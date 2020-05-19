@@ -74,12 +74,35 @@ class bot():
         cid = url[cid_index:]
         student_id = self.hw_id_table[cid]
         return student_id
+    
+    def handling_not_exist:
+        grade_btn = self.driver.find_element_by_xpath('//*[@id="tScore"]/a')
+        grade_btn.click()
+
+        sleep(0.4)
+
+        self.driver.switch_to.frame('if1')
+        grade_input = self.driver.find_element_by_xpath('//*[@id="fmScore"]')
+        if CLEAR_PREVIOUS: grade_input.clear()
+        grade_input.send_keys('0')
+
+        last_one = self.check_is_finish()
+        sleep(1)
+        comfirm_btn = self.driver.find_element_by_xpath('//*[@id="fm"]/div[2]/input[1]')
+        comfirm_btn.click()
+        return last_one
+
 
     def grading(self):
         # find the name
         NAME = self.find_student_name()
         ID   = self.get_student_id()
         print('start grading ', ID,NAME)
+        if ID not in self.grades:
+            print("Can't not find %d %s"%(ID, NAME))
+            last_one = self.handling_not_exist()
+            sleep(1)
+            return last_one
         
         grade = self.grades[ID]
 
@@ -164,7 +187,10 @@ class bot():
             ID = g[0]
             m = {}
             for i in range(len(keys)):
-                m[ keys[i] ] = g[i]
+                try:
+                    m[ keys[i] ] = g[i]
+                except:
+                    m[ keys[i] ] = None
             self.grades[ID] = m
 
 if __name__ == "__main__":
